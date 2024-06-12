@@ -6,7 +6,7 @@ import prismadb from '@/lib/prismadb'
 import { BillboardColumn } from './components/columns';
 
 
-const CategoriesPage = async ({
+const BillboardsPage = async ({
   params
 }: {params: {storeId:string}}) => {
   const billboards = await prismadb.billboard.findMany({
@@ -33,4 +33,4 @@ const CategoriesPage = async ({
   )
 }
 
-export default CategoriesPage
+export default BillboardsPage
