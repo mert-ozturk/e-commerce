@@ -1,7 +1,7 @@
 'use client'
 
 import { DropdownMenuContent,DropdownMenu, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { CategoryColumn } from "./columns"
+import { BillboardColumn } from "./columns"
 import { Button } from "@/components/ui/button"
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react"
 import toast from "react-hot-toast"
@@ -12,7 +12,7 @@ import { AlertModal } from "@/components/modals/alert-modal"
  
 
 interface CellActionProps {
-    data:CategoryColumn
+    data:BillboardColumn
 }
 
 export const CellAction:React.FC<CellActionProps> = ({
@@ -26,15 +26,15 @@ export const CellAction:React.FC<CellActionProps> = ({
 
     const onCopy = (id:string) => {
         navigator.clipboard.writeText(id)
-        toast.success("Category id copied to the clipboard")
+        toast.success("Billboard id copied to the clipboard")
     }
 
     const onDelete = async () => {
         try{
             setLoading(true)
-            await axios.delete(`/api/${params.storeId}/categories/${params.billboardId}`)
+            await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`)
             router.refresh()
-            router.push(`/${params.storeId}/categories`)
+            router.push(`/${params.storeId}/billboards`)
             toast.success("Billboard deleted.")
         }catch(error){
             toast.error("Make sure you removed all categories and billboard first.")
@@ -66,7 +66,7 @@ export const CellAction:React.FC<CellActionProps> = ({
                     <Copy className="mr-4 h-4 w-4" />
                     Copy Id
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={()=>router.push(`/${params.storeId}/categories/${data.id}`) }>
+                <DropdownMenuItem onClick={()=>router.push(`/${params.storeId}/billboards/${data.id}`) }>
                     <Edit className="mr-4 h-4 w-4" />
                     Update
                 </DropdownMenuItem>
