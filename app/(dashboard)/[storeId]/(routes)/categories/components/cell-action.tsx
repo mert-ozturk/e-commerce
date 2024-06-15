@@ -32,7 +32,7 @@ export const CellAction:React.FC<CellActionProps> = ({
     const onDelete = async () => {
         try{
             setLoading(true)
-            await axios.delete(`/api/${params.storeId}/categories/${params.billboardId}`)
+            await axios.delete(`/api/${params.storeId}/categories/${data.id}`)
             router.refresh()
             router.push(`/${params.storeId}/categories`)
             toast.success("Billboard deleted.")
