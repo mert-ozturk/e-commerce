@@ -49,7 +49,16 @@ export async function PATCH(
         if(!params.colorId){
             return new NextResponse("Color id is required",{status:400}) 
             }
-        
+            const storeByUserId = await prismadb.store.findFirst({
+                where:{
+                    id:params.storeId,
+                    userId
+                }
+            })
+    
+            if(!storeByUserId) {
+                return new NextResponse("Unauthenticated",{status:403})
+            }
           
 
         const color = await prismadb.color.updateMany({
