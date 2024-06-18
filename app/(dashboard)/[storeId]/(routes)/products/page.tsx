@@ -1,10 +1,9 @@
- 
+import prismadb from '@/lib/prismadb'
 import {format} from "date-fns"
 import React from 'react'
 import { ProductClient } from './components/client'
-import prismadb from '@/lib/prismadb'
 import { ProductColumn } from './components/columns';
-import { formatter } from "@/lib/utils";
+import { formatter } from '@/lib/utils';
 
 
 const ProductsPage = async ({
@@ -18,7 +17,6 @@ const ProductsPage = async ({
       category:true,
       size:true,
       color:true,
-
     },
     orderBy:{
       createAt: 'desc' 
@@ -29,10 +27,10 @@ const ProductsPage = async ({
     id: item.id,
     name: item.name,
     isFeatured: item.isFeatured,
-    isArchived:item.isArchived,
-    price:formatter.format(item.price.toNumber()),
+    isArchived: item.isArchived,
+    price: formatter.format(item.price.toNumber()),
     category: item.category.name,
-    size: item.category.name,
+    size: item.size.name,
     color:item.color.value,
     createdAt:format(item.createAt,"MMMM do,yyyy")
   }))

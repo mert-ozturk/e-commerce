@@ -9,9 +9,9 @@ import ImageUpload from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
- 
+import { useOrigin } from "@/hooks/use-origin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category, Color, Image, Product, Size } from "@prisma/client";
+import {  Category, Color, Image, Product, Size } from "@prisma/client";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useParams } from "next/navigation";
@@ -24,15 +24,16 @@ import * as z from "zod";
 
 const formSchema = z.object({
     name:z.string().min(1),
-    images:z.object({url: z.string()}).array(),
-    price: z.coerce.number().min(1),
+    images:z.object({ url: z.string() }).array(),
+    price:z.coerce.number().min(1),
     categoryId: z.string().min(1),
     colorId: z.string().min(1),
     sizeId: z.string().min(1),
-    isFeatured: z.boolean().default(false).optional(),
-    isArchived: z.boolean().default(false).optional(),
+    isFeatured:z.boolean().default(false).optional(),
+    isArchived:z.boolean().default(false).optional(),
 
-})  
+
+})
 
 type ProductFormValues = z.infer<typeof formSchema>;
 
@@ -42,9 +43,9 @@ interface ProductFormProps {
     initialData:Product & {
         images: Image[]
     } | null;
-    categories: Category[];
-    colors: Color[];
-    sizes: Size[];
+    categories: Category[]
+    colors: Color[]
+    sizes: Size[]
 
 }
 
@@ -54,17 +55,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     initialData,
     categories,
     colors,
-    sizes,
+    sizes
 }) => {
     const params = useParams()
     const router = useRouter()
-     
+  
 
     const [open,setOpen] = useState(false)
     const [loading,setLoading] = useState(false)
 
     const title = initialData ? "Edit product" : "Create product"
-    const description = initialData ? "Edit a product" : "Add a  new product"
+    const description = initialData ? "Edit a product" : "Create product"
     const toastMessage = initialData ? "Product updated." : "Product created."
     const action = initialData ? "Save changes" : "Create"
 
@@ -72,18 +73,17 @@ export const ProductForm: React.FC<ProductFormProps> = ({
         resolver:zodResolver(formSchema),
         defaultValues: initialData ? {
             ...initialData,
-            price: parseFloat(String(initialData?.price)),
-
-
+            price:parseFloat(String(initialData?.price)),
         } : {
             name: '',
             images: [],
-            price: 0,
-            categoryId: '',
-            colorId: '',
-            sizeId: '',
+            price:0,
+            categoryId:'',
+            colorId:'',
+            sizeId:'',
             isFeatured: false,
             isArchived: false,
+
         }
     });
 
@@ -99,7 +99,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             router.push(`/${params.storeId}/products`)
             toast.success(toastMessage)
         }catch(error){
-            toast.error(" Gönderilmedi! Product Hata Bildirisi")
+            toast.error("Something went wrong")
         }finally{
             setLoading(false)
         }
@@ -158,7 +158,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                             value={field.value.map((image)=>image.url)}
                             disabled={loading}
                             onChange={(url)=>field.onChange([...field.value,{url}])}
-                            onRomove={(url)=>field.onChange( [...field.value.filter((current)=>current.url !== url )])}
+                            onRomove={(url)=>field.onChange([...field.value.filter((current)=> current.url !== url)])}
                             />
                        
                         </FormControl>
@@ -181,7 +181,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     </FormItem>
                 )}
                 />
-                 <FormField 
+
+            <FormField 
                 control={form.control}
                 name="price"
                 render={({field})=>(
@@ -195,7 +196,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     </FormItem>
                 )}
                 />
-                 <FormField 
+                <FormField 
                 control={form.control}
                 name="categoryId"
                 render={({field})=>(
@@ -232,7 +233,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     </FormItem>
                 )}
                 />
-
+            
             <FormField 
                 control={form.control}
                 name="sizeId"
@@ -271,7 +272,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 )}
                 />
 
-                <FormField 
+            <FormField 
                 control={form.control}
                 name="colorId"
                 render={({field})=>(
@@ -288,7 +289,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                                 <SelectTrigger>
                                     <SelectValue
                                      defaultValue={field.value} 
-                                     placeholder="Select a size"
+                                     placeholder="Select a color"
                                     />
                                 
                                 <SelectContent>
@@ -320,20 +321,20 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                         // @ts-ignore
                         onCheckedChange={field.onChange}
                         />
-
                        </FormControl>
                        <div className="space-y-1 leading-none">
-                        <FormLabel>
+                            <FormLabel>
                             Featured
-                        </FormLabel>
-                        <FormDescription>
-                            This product will appear on the home page
-                        </FormDescription>
+                            </FormLabel>
+                            <FormDescription>
+                                This product will appear on the home page.
+                            </FormDescription>
                        </div>
                     </FormItem>
                 )}
                 />
-                 <FormField 
+
+<FormField 
                 control={form.control}
                 name="isArchived"
                 render={({field})=>(
@@ -344,20 +345,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                         // @ts-ignore
                         onCheckedChange={field.onChange}
                         />
-
                        </FormControl>
                        <div className="space-y-1 leading-none">
-                        <FormLabel>
-                            Arcivhed
-                        </FormLabel>
-                        <FormDescription>
-                            This product will not appear anywhere in the sotre.
-                        </FormDescription>
+                            <FormLabel>
+                            Archived
+                            </FormLabel>
+                            <FormDescription>
+                                This product will appear anywhere in the store.
+                            </FormDescription>
                        </div>
                     </FormItem>
                 )}
                 />
-            
                 </div>
                 <Button disabled={loading} className="ml-auto" type="submit">
                      {action}
